@@ -1,6 +1,6 @@
 # Isi Authentication bila login dengan Facebook #
 
-```
+```json
 {
   "authorities" : [ {
     "authority" : "ROLE_USER"
