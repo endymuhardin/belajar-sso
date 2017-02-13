@@ -1,6 +1,7 @@
 package com.muhardin.endy.belajarsso;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import javax.servlet.Filter;
@@ -31,6 +32,9 @@ public class KonfigurasiSecurity extends WebSecurityConfigurerAdapter {
 
     @Autowired
     OAuth2ClientContext oauth2ClientContext;
+    
+    // nantinya ini ngecek ke database apakah user sudah terdaftar di aplikasi kita sendiri atau belum
+    private final List<String> daftarUserTerdaftar = Arrays.asList("Endy Muhardin");
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
@@ -97,6 +101,11 @@ public class KonfigurasiSecurity extends WebSecurityConfigurerAdapter {
             }
             if(map.get("sub") != null){
                 daftarAuthority.add("GOOGLE_USER");
+            }
+            if(daftarUserTerdaftar.contains(map.get("name"))) {
+                daftarAuthority.add("REGISTERED_USER");
+            } else {
+                daftarAuthority.add("UNREGISTERED_USER");
             }
             
             return AuthorityUtils.createAuthorityList(daftarAuthority.toArray(new String[daftarAuthority.size()]));
