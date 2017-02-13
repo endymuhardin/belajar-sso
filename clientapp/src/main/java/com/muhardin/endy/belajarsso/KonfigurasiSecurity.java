@@ -33,8 +33,11 @@ public class KonfigurasiSecurity extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http.authorizeRequests()
                 .antMatchers("/protected.html").authenticated()
+                .antMatchers("/saya").authenticated()
+                .antMatchers("/api/saya").authenticated()
                 .anyRequest().permitAll()
-                .and().addFilterBefore(ssoFilter(), BasicAuthenticationFilter.class);
+                .and().addFilterBefore(ssoFilter(), BasicAuthenticationFilter.class)
+                .logout().logoutSuccessUrl("/");
     }
 
     @Bean

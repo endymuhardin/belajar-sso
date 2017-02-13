@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Info Saya</title>
+    </head>
+    <body>
+        <h1>Info user yang sedang login</h1>
+        <ul>
+            <li>Facebook ID : <span th:text="*{currentUser.userAuthentication.details[__${'id'}__]}?: 'Login Google tidak ada field id' ">Dummy User</span></li>
+            <li>Google ID : <span th:text="*{currentUser.userAuthentication.details[__${'sub'}__]}?: 'Login Facebook tidak ada field sub' ">Dummy User</span></li>
+            <li>Nama User : <span th:text="${currentUser.userAuthentication.details.name}">Dummy User</span></li>
+        </ul>
+        
+        <form method="post" th:action="@{/logout}">
+            <input type="submit" value="Logout" />
+        </form>
+        
+    </body>
+</html>
