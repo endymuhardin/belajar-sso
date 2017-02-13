@@ -34,7 +34,7 @@ public class KonfigurasiSecurity extends WebSecurityConfigurerAdapter {
     OAuth2ClientContext oauth2ClientContext;
     
     // nantinya ini ngecek ke database apakah user sudah terdaftar di aplikasi kita sendiri atau belum
-    private final List<String> daftarUserTerdaftar = Arrays.asList("Endy Muhardin");
+    private final List<String> daftarUserTerdaftar = Arrays.asList("endy.muhardin@gmail.com", "anggi.riyandi@gmail.com");
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
@@ -102,7 +102,7 @@ public class KonfigurasiSecurity extends WebSecurityConfigurerAdapter {
             if(map.get("sub") != null){
                 daftarAuthority.add("GOOGLE_USER");
             }
-            if(daftarUserTerdaftar.contains(map.get("name"))) {
+            if(daftarUserTerdaftar.contains(map.get("email"))) {
                 daftarAuthority.add("REGISTERED_USER");
             } else {
                 daftarAuthority.add("UNREGISTERED_USER");
