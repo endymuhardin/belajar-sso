@@ -2,8 +2,10 @@ package com.muhardin.endy.belajarsso;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import javax.servlet.Filter;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.security.oauth2.resource.AuthoritiesExtractor;
 import org.springframework.boot.autoconfigure.security.oauth2.resource.ResourceServerProperties;
 import org.springframework.boot.autoconfigure.security.oauth2.resource.UserInfoTokenServices;
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -13,6 +15,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.oauth2.client.OAuth2ClientContext;
 import org.springframework.security.oauth2.client.OAuth2RestTemplate;
 import org.springframework.security.oauth2.client.filter.OAuth2ClientAuthenticationProcessingFilter;
@@ -65,6 +68,7 @@ public class KonfigurasiSecurity extends WebSecurityConfigurerAdapter {
         UserInfoTokenServices tokenServices = new UserInfoTokenServices(client.getResource().getUserInfoUri(), 
                 client.getClient().getClientId());
         tokenServices.setRestTemplate(ssoRestTemplate);
+        tokenServices.setAuthoritiesExtractor(authoritiesExtractor());
         ssoFilter.setTokenServices(tokenServices);
         return ssoFilter;
     }
@@ -80,7 +84,25 @@ public class KonfigurasiSecurity extends WebSecurityConfigurerAdapter {
     public ClientResources facebook() {
         return new ClientResources();
     }
-
+    
+    @Bean
+    public AuthoritiesExtractor authoritiesExtractor(){
+        return (Map<String, Object> map) -> {
+            List<String> daftarAuthority = new ArrayList<>();
+            
+            daftarAuthority.add("CUSTOMER");
+            
+            if(map.get("id") != null){
+                daftarAuthority.add("FACEBOOK_USER");
+            }
+            if(map.get("sub") != null){
+                daftarAuthority.add("GOOGLE_USER");
+            }
+            
+            return AuthorityUtils.createAuthorityList(daftarAuthority.toArray(new String[daftarAuthority.size()]));
+        };
+    }
+   
     class ClientResources {
 
         @NestedConfigurationProperty
