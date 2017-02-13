@@ -9,6 +9,7 @@
             <li>Facebook ID : <span th:text="*{currentUser.userAuthentication.details[__${'id'}__]}?: 'Login Google tidak ada field id' ">Dummy User</span></li>
             <li>Google ID : <span th:text="*{currentUser.userAuthentication.details[__${'sub'}__]}?: 'Login Facebook tidak ada field sub' ">Dummy User</span></li>
             <li>Nama User : <span th:text="${currentUser.userAuthentication.details.name}">Dummy User</span></li>
+            <li>Email : <span th:text="${currentUser.userAuthentication.details.email}">Dummy User</span></li>
         </ul>
         
         <h1>Daftar Authorities</h1>

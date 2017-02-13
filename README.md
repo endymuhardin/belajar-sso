@@ -4,3 +4,5 @@ Contoh isi object `Authentication` bila login dengan:
 
 * [Facebook](docs/facebook-oauth-output.md)
 * [Google](docs/google-oauth-output.md)
+
+Catatan : response asli yang didapatkan dari backend service (Facebook atau Google) hanyalah yang ada dalam field `userAuthentication.details`.
