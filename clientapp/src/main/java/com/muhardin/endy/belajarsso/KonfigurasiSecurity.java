@@ -61,6 +61,7 @@ public class KonfigurasiSecurity extends WebSecurityConfigurerAdapter {
         List<Filter> daftarFilter = new ArrayList<>();
         daftarFilter.add(ssoFilter(google(), "/login/google"));
         daftarFilter.add(ssoFilter(facebook(), "/login/facebook"));
+        daftarFilter.add(ssoFilter(authserver(), "/login/authserver"));
         filter.setFilters(daftarFilter);
         return filter;
     }
@@ -86,6 +87,12 @@ public class KonfigurasiSecurity extends WebSecurityConfigurerAdapter {
     @Bean
     @ConfigurationProperties("facebook")
     public ClientResources facebook() {
+        return new ClientResources();
+    }
+    
+    @Bean
+    @ConfigurationProperties("authserver")
+    public ClientResources authserver() {
         return new ClientResources();
     }
     

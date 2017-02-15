@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class UserController {
 
-    @RequestMapping({"/user", "/me"})
+    @RequestMapping({"/api/user", "/api/me"})
     public Authentication user(Authentication auth) {
         return auth;
     }

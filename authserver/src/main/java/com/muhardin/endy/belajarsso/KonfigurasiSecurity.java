@@ -4,6 +4,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.Ordered;
+import org.springframework.core.annotation.Order;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -16,10 +18,12 @@ import org.springframework.security.oauth2.config.annotation.web.configuration.E
 import org.springframework.security.oauth2.config.annotation.web.configuration.ResourceServerConfigurerAdapter;
 import org.springframework.security.oauth2.config.annotation.web.configurers.AuthorizationServerEndpointsConfigurer;
 import org.springframework.security.oauth2.config.annotation.web.configurers.AuthorizationServerSecurityConfigurer;
+import org.springframework.security.oauth2.config.annotation.web.configurers.ResourceServerSecurityConfigurer;
 
-@EnableWebSecurity
+@EnableWebSecurity(debug = true)
+@Order(100)
 public class KonfigurasiSecurity extends WebSecurityConfigurerAdapter {
-
+    
     @Autowired
     public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
         auth
@@ -34,10 +38,20 @@ public class KonfigurasiSecurity extends WebSecurityConfigurerAdapter {
         return super.authenticationManagerBean();
     }
 
+    @Override
+    protected void configure(HttpSecurity http) throws Exception {
+        http
+            .authorizeRequests().antMatchers("/**").authenticated()
+                .and().formLogin().permitAll()
+                .and().logout().permitAll();
+    }
+    
+    
+     
     @Configuration
     @EnableAuthorizationServer
-    protected static class KonfigurasiAuthServer extends
-            AuthorizationServerConfigurerAdapter {
+    @Order(20)
+    protected static class KonfigurasiAuthServer extends AuthorizationServerConfigurerAdapter {
 
         @Autowired
         @Qualifier("authenticationManagerBean")
@@ -51,7 +65,7 @@ public class KonfigurasiSecurity extends WebSecurityConfigurerAdapter {
 
         @Override
         public void configure(AuthorizationServerSecurityConfigurer oauthServer) throws Exception {
-            oauthServer.checkTokenAccess("hasRole('CLIENT')");
+            oauthServer.checkTokenAccess("hasAuthority('CLIENT')");
         }
 
         @Override
@@ -60,22 +74,35 @@ public class KonfigurasiSecurity extends WebSecurityConfigurerAdapter {
                     .inMemory()
                     .withClient("clientapp")
                     .secret("123456")
+                    .authorities("CLIENT")
                     .authorizedGrantTypes("authorization_code", "refresh_token", "password")
                     .scopes("read", "write")
                     .autoApprove(true)
                     .resourceIds("belajarsso");
         }
     }
-
+    
     @Configuration
     @EnableResourceServer
-    protected static class ResourceServerConfiguration extends ResourceServerConfigurerAdapter {
+    @Order(30)
+    protected static class ResourceServerConfiguration extends
+            ResourceServerConfigurerAdapter {
+
+        @Override
+        public void configure(ResourceServerSecurityConfigurer resources) {
+            resources
+                    .resourceId("belajarsso");
+        }
 
         @Override
         public void configure(HttpSecurity http) throws Exception {
             http
-                    .antMatcher("/me")
-                    .authorizeRequests().anyRequest().authenticated();
+                    .requestMatchers()
+                    .antMatchers("/api/**")
+                    .and().authorizeRequests()
+                    .antMatchers("/api/**")
+                    .authenticated();
         }
+
     }
 }
