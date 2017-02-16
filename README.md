@@ -6,3 +6,8 @@ Contoh isi object `Authentication` bila login dengan:
 * [Google](docs/google-oauth-output.md)
 
 Catatan : response asli yang didapatkan dari backend service (Facebook atau Google) hanyalah yang ada dalam field `userAuthentication.details`.
+
+
+Referensi
+
+* https://github.com/spring-projects/spring-security-oauth/issues/683
