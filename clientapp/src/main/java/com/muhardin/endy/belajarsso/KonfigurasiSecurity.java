@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 import javax.servlet.Filter;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.security.oauth2.client.EnableOAuth2Sso;
 import org.springframework.boot.autoconfigure.security.oauth2.resource.AuthoritiesExtractor;
 import org.springframework.boot.autoconfigure.security.oauth2.resource.ResourceServerProperties;
 import org.springframework.boot.autoconfigure.security.oauth2.resource.UserInfoTokenServices;
@@ -28,6 +29,7 @@ import org.springframework.web.filter.CompositeFilter;
 
 @EnableWebSecurity(debug = true)
 @EnableOAuth2Client
+@EnableOAuth2Sso
 public class KonfigurasiSecurity extends WebSecurityConfigurerAdapter {
 
     @Autowired
@@ -61,7 +63,6 @@ public class KonfigurasiSecurity extends WebSecurityConfigurerAdapter {
         List<Filter> daftarFilter = new ArrayList<>();
         daftarFilter.add(ssoFilter(google(), "/login/google"));
         daftarFilter.add(ssoFilter(facebook(), "/login/facebook"));
-        daftarFilter.add(ssoFilter(authserver(), "/login/authserver"));
         filter.setFilters(daftarFilter);
         return filter;
     }
@@ -87,12 +88,6 @@ public class KonfigurasiSecurity extends WebSecurityConfigurerAdapter {
     @Bean
     @ConfigurationProperties("facebook")
     public ClientResources facebook() {
-        return new ClientResources();
-    }
-    
-    @Bean
-    @ConfigurationProperties("authserver")
-    public ClientResources authserver() {
         return new ClientResources();
     }
     
